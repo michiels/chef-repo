@@ -156,6 +156,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "docker" do
 
+    config.vm.network :forwarded_port, guest: 10080, host: 10080
+    config.vm.network :forwarded_port, guest: 10022, host: 10022
+
     config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "./cookbooks"
       chef.roles_path = "./roles"
@@ -166,10 +169,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       chef.json = {
         "docker_applications" => {
-          "name" => "gitlab",
-          "image" => "sameersbn/gitlab:latest",
-          "env_vars" => ["GITLAB_PORT=10080", "GITLAB_SSH_PORT=10022"],
-          "ports" => ["10022:22", "10080:80"]
+            "redis" => {
+              "image" => "sameersbn/redis:latest"
+            },
+            "mysql" => {
+              "image" => "sameersbn/mysql:latest",
+              "env_vars" => ["DB_NAME=gitlab", "DB_USER=gitlab", "DB_PASS=gitlab"]
+            },
+            "gitlab" => {
+              "image" => "sameersbn/gitlab:latest",
+              "env_vars" => ["GITLAB_PORT=10080", "GITLAB_SSH_PORT=10022"],
+              "ports" => ["10022:22", "10080:80"],
+              "links" => ["mysql:mysql", "redis:redisio"]
+            }
         }
       }
     end

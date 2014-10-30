@@ -11,13 +11,15 @@ include_recipe "docker"
 
 if node[:docker_applications]
 
-	node[:docker_applications].each do |docker_info|
+	node[:docker_applications].each do |name, docker_info|
 		docker_image docker_info['image']
 
 		docker_container docker_info['image'] do
-			container_name docker_info['name']
+			detach true
+			container_name name
 			env docker_info['env_vars']
 			port docker_info['ports']
+			link docker_info['links']
 		end
 	end
 
