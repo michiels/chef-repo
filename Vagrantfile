@@ -154,4 +154,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   end
 
+  config.vm.define "docker" do
+
+    config.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = "./cookbooks"
+      chef.roles_path = "./roles"
+
+      chef.log_level = :info
+
+      chef.add_role "docker"
+    end
+
+  end
+
 end
