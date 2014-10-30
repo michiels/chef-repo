@@ -163,6 +163,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.log_level = :info
 
       chef.add_role "docker"
+
+      chef.json = {
+        "docker_applications" => {
+          "name" => "gitlab",
+          "image" => "sameersbn/gitlab:latest",
+          "env_vars" => ["GITLAB_PORT=10080", "GITLAB_SSH_PORT=10022"],
+          "ports" => ["10022:22", "10080:80"]
+        }
+      }
     end
 
   end
