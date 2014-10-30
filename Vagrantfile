@@ -174,13 +174,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             },
             "mysql" => {
               "image" => "sameersbn/mysql:latest",
-              "env_vars" => ["DB_NAME=gitlab", "DB_USER=gitlab", "DB_PASS=gitlab"]
+              "env_vars" => ["DB_NAME=gitlab", "DB_USER=gitlab", "DB_PASS=gitlab"],
+              "volumes" => ["/opt/mysql/var/lib/mysql:/var/lib/mysql"]
             },
             "gitlab" => {
               "image" => "sameersbn/gitlab:latest",
               "env_vars" => ["GITLAB_PORT=10080", "GITLAB_SSH_PORT=10022"],
               "ports" => ["10022:22", "10080:80"],
-              "links" => ["mysql:mysql", "redis:redisio"]
+              "links" => ["mysql:mysql", "redis:redisio"],
+              "volumes" => ["/opt/gitlab/home/git/data:/home/git/data"],
             }
         }
       }

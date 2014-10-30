@@ -20,6 +20,7 @@ if node[:docker_applications]
 			env docker_info['env_vars']
 			port docker_info['ports']
 			link docker_info['links']
+			volume docker_info['volumes']
 		end
 	end
 
