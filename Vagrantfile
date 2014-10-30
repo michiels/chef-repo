@@ -190,4 +190,28 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   end
 
+  config.vm.define "docker-redis" do
+
+    config.vm.network :forwarded_port, guest: 6379, host: 6379
+
+    config.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = "./cookbooks"
+      chef.roles_path = "./roles"
+
+      chef.log_level = :info
+
+      chef.add_role "docker"
+
+      chef.json = {
+        "docker_applications" => {
+          "redis" => {
+            "image" => "redis",
+            "ports" => ["6379:6379"]
+          } 
+        }
+      }
+    end
+
+  end
+
 end
